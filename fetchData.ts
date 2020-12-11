@@ -23,8 +23,18 @@ async function main() {
 
     const distributionList: DistributionList = getDistribution(barList, toDistribute);
 
-    const filename = './distribution/' + block + '.json';
+    console.log(distributionList.length)
+
+    let filename = './distribution/' + block + '.json';
     fs.writeFileSync(filename, JSON.stringify(distributionList, null, 2));
+
+    let disperseOutput = "";
+    distributionList.forEach(entry => {
+        disperseOutput += entry.address + "=" + entry.amount + "\n";
+    })
+
+    filename = './distribution/' + block + '.txt';
+    fs.writeFileSync(filename, disperseOutput);
 
     process.exit();
 }
@@ -41,11 +51,11 @@ function getDistribution(barList: BarList, toDistribute: number) {
         if(amount < amountToIgnore) { amount = 0; }
         return {
             address: entry.address,
-            amount: String(Math.floor(amount)),    
+            amount: String(amount.toFixed(5)),    
         }
     })
 
-    return output.filter(entry => { return entry.amount === "0" ? false : true })
+    return output.filter(entry => { return entry.amount === "0.00000" ? false : true })
 }
 
 main();
